@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup, login, getProfile, getAllUsers } from '../controllers/user.controller.js';
+import { signup, login, getProfile, getAllUsers, deleteUser } from '../controllers/user.controller.js';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
 import { authorizeRole } from '../middlewares/authorizeRole.js'; // à créer si besoin
 
@@ -27,5 +27,14 @@ router.post('/login', login);
 router.get('/me', authenticateToken, getProfile);
 
 router.get('/', authenticateToken, authorizeRole('admin'), getAllUsers);
+
+
+/**
+ * @route   DELETE /api/v1/users/:id
+ * @desc    Supprimer un utilisateur (admin uniquement)
+ * @access  Privé (admin)
+ */
+router.delete('/:id', authenticateToken, authorizeRole('admin'), deleteUser);
+
 
 export default router;

@@ -128,3 +128,25 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs" });
   }
 };
+
+
+/**
+ * @route   DELETE /api/v1/users/:id
+ * @desc    Supprimer un utilisateur (admin uniquement)
+ */
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Utilisateur non trouvé" });
+    }
+
+    res.json({ message: `Utilisateur ${id} supprimé avec succès` });
+  } catch (err) {
+    console.error('❌ Erreur deleteUser :', err);
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
+};
